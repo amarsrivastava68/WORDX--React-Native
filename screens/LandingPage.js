@@ -4,7 +4,7 @@ import { View, Text, StyleSheet, Image } from 'react-native';
 export default function LandingPage({ navigation }) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace('MainPage');  // Navigates to MainPage after 3 seconds
+      navigation.replace('InfoPage');  // Navigates to MainPage after 3 seconds
     }, 2000);
 
     return () => clearTimeout(timer);  // Clear timeout if component unmounts
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
     color: 'white',
     fontWeight: 'bold',
-    letterSpacing: 2, // To add some space between letters
+    letterSpacing: 2, 
   },
   footerText: {
     fontSize: 20,

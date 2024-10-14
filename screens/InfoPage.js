@@ -1,4 +1,5 @@
 import React from "react";
+import {useState} from 'react'
 import {
   View,
   Text,
@@ -11,7 +12,14 @@ import {
   Platform,
 } from "react-native";
 
-export default function InfoPage() {
+export default function InfoPage({navigation}) {
+  const [name , setName ] = useState(null)
+  const handleGetStarted = () => {
+    if (name.trim()) {
+      // Navigate to the main screen
+      navigation.navigate("MainPage", { userName: name });
+    }
+  };
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -44,8 +52,13 @@ export default function InfoPage() {
             five centuries, but also the leap into electronic typesetting,
             remaining essentially unchanged.
           </Text>
-          <TextInput style={styles.inputField} placeholder="Enter your name" />
-          <TouchableOpacity style={styles.button}>
+          <TextInput
+            style={styles.inputField}
+            placeholder="Enter your name"
+            value={name} // Set the value to the name state
+            onChangeText={setName} // Update the name state on change
+          />
+          <TouchableOpacity style={styles.button} onPress={handleGetStarted}>
             <Text style={styles.buttonText}>GET STARTED</Text>
           </TouchableOpacity>
         </View>
@@ -75,7 +88,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     margin: 20, // Cushion space between circles
-    marginTop : 150
+    
   },
   // Second Circle (medium light color)
   outerCircle2: {
