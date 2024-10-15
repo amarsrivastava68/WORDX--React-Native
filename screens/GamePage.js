@@ -1,4 +1,6 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef ,Image } from "react";
+import { isCommonWord } from "../utils/ValidityChecker";
+import { FontAwesome } from '@expo/vector-icons'; // If using Expo
 import {
   View,
   Text,
@@ -115,11 +117,21 @@ const GamePage = ({ route }) => {
         <View style={styles.yourWordsContainer}>
           <Text style={styles.yourWordsTitle}>Your Words</Text>
           <View style={styles.wordsGrid}>
-            {submittedWords.map((word, index) => (
-              <View key={index} style={styles.wordBox}>
-                <Text style={styles.wordText}>{word}</Text>
-              </View>
-            ))}
+          {submittedWords.map((word, index) => (
+  <View key={index} style={styles.wordBox}>
+    
+    {isCommonWord(word) ? (
+        <FontAwesome name="check-circle" size={24} color="green" />
+      ) : (
+        <FontAwesome name="times-circle" size={24} color="red" />
+      )} 
+      <Text style={styles.wordText}>
+     
+      
+     {word}
+   </Text>
+  </View>
+))}
           </View>
         </View>
       </ScrollView>
@@ -215,7 +227,7 @@ const styles = StyleSheet.create({
   wordsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between", // Distribute words with spacing between them
+    justifyContent: "center", // Distribute words with spacing between them
     gap: 10, // Add a gap between both columns and rows
   },
   wordBox: {
@@ -224,7 +236,12 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     backgroundColor: "#f0f0f0",
     alignItems: "center",
+    justifyContent : "center" ,
     borderRadius: 8,
+    gap : 5 ,
+    flexDirection : 'row' ,
+    
+
   },
   wordText: {
     fontSize: 16,
