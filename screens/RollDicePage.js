@@ -81,7 +81,7 @@ export default function RollDicePage({ route  , navigation}) {
     },
   ];
 
-  // Apply shakeAnimation to the transform property of the image
+  // Apply shakeAnimation to thFe transform property of the image
   const shakeStyle = {
     transform: [{ translateX: shakeAnimation }],
   };
@@ -103,6 +103,7 @@ export default function RollDicePage({ route  , navigation}) {
       points={0}
       onVolumePress={() => alert("Volume")}
       onDarkModePress={() => alert("Dark Mode")}
+      timer = {false}
       buttons={buttons}
     >
       <View style={styles.container}>

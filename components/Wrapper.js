@@ -1,4 +1,5 @@
 import React from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -18,6 +19,28 @@ const WrapperComponent = ({
   onDarkModePress,
   buttons,
 }) => {
+  const [countdown, setCountdown] = useState(60); // Timer state
+
+  useEffect(() => {
+    let interval;
+
+    if (timer) {
+      setCountdown(60); // Reset countdown when timer starts
+      interval = setInterval(() => {
+        setCountdown((prev) => {
+          if (prev <= 1) {
+            clearInterval(interval); // Clear interval when it reaches 0
+            return 0; // Prevent going below 0
+          }
+          return prev - 1; // Decrease countdown
+        });
+      }, 1000); // Update every second
+    }
+
+    // Cleanup the interval on component unmount or timer change
+    return () => clearInterval(interval);
+  }, [timer]);
+
   return (
     <SafeAreaView style={styles.safeArea}>
       {/* Top Row with Volume, Timer, and Points */}
@@ -44,7 +67,7 @@ const WrapperComponent = ({
         {/* Timer in the middle */}
         {timer && (
           <View style={styles.timerContainer}>
-            <Text style={styles.timerText}>{timer}</Text>
+            <Text style={[styles.timerText , {color : 'black', marginTop : 0 }]}>{countdown} s</Text>
           </View>
         )}
 
@@ -60,15 +83,26 @@ const WrapperComponent = ({
 
       {/* Bottom Buttons */}
       <View style={styles.bottomRow}>
-        {buttons.map((button, index) => (
-          <TouchableOpacity
-            key={index}
-            style={styles.button}
-            onPress={button.onPress}
-          >
-            <Text style={styles.buttonText}>{button.label}</Text>
-          </TouchableOpacity>
-        ))}
+        {timer && (
+          <View style={[styles.timerBottomContainer, { flexDirection: "col" }]}>
+            <Image
+              source={require("../assets/sand-clock-icon.png")} // Replace with your hourglass icon
+              style={styles.timerIcon}
+            />
+            <Text style={styles.timerText}>{countdown}s</Text>
+          </View>
+        )}
+
+        {!timer &&
+          buttons.map((button, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.button}
+              onPress={button.onPress}
+            >
+              <Text style={styles.buttonText}>{button.label}</Text>
+            </TouchableOpacity>
+          ))}
       </View>
     </SafeAreaView>
   );
@@ -162,7 +196,8 @@ const styles = StyleSheet.create({
   bottomRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+
+    justifyContent: "space-around",
     padding: 10,
     flex: 1,
     backgroundColor: "navy",
@@ -187,6 +222,24 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white",
     fontSize: 16,
+  },
+  timerContainer: {
+    alignItems: "center",
+  },
+  timerIcon: {
+    width: 40,
+    height: 40,
+    marginRight: 5, // Space between icon and text
+  },
+  timerText: {
+    fontSize: 30,
+    marginTop: 2,
+    color: "white",
+    fontWeight: "bold",
+  },
+  timerBottomContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
 
