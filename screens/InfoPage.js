@@ -1,5 +1,5 @@
 import React from "react";
-import {useState} from 'react'
+import { useState } from "react";
 import {
   View,
   Text,
@@ -12,12 +12,12 @@ import {
   Platform,
 } from "react-native";
 
-export default function InfoPage({navigation}) {
-  const [name , setName ] = useState(null)
+export default function InfoPage({ navigation }) {
+  const [name, setName] = useState(null);
   const handleGetStarted = () => {
     if (name.trim()) {
       // Navigate to the main screen
-      navigation.navigate("MainPage", { userName: name });
+      navigation.navigate("RollDicePage", { userName: name });
     }
   };
   return (
@@ -46,10 +46,10 @@ export default function InfoPage({navigation}) {
         <View style={styles.newSection}>
           <Text style={styles.paragraph}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
-            industry. Lorem Ipsum has been the industry's standard dummy text ever
-            since the 1500s, when an unknown printer took a galley of type and
-            scrambled it to make a type specimen book. It has survived not only
-            five centuries, but also the leap into electronic typesetting,
+            industry. Lorem Ipsum has been the industry's standard dummy text
+            ever since the 1500s, when an unknown printer took a galley of type
+            and scrambled it to make a type specimen book. It has survived not
+            only five centuries, but also the leap into electronic typesetting,
             remaining essentially unchanged.
           </Text>
           <TextInput
@@ -88,7 +88,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     margin: 20, // Cushion space between circles
-    
   },
   // Second Circle (medium light color)
   outerCircle2: {
@@ -151,7 +150,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center", // Center the button text
     elevation: 5, // Adds a shadow effect on Android
-    shadowColor: '#000', // Shadow color for iOS
+    shadowColor: "#000", // Shadow color for iOS
     shadowOffset: {
       width: 0, // Horizontal shadow offset
       height: 2, // Vertical shadow offset

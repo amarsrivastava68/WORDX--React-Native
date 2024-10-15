@@ -42,21 +42,16 @@ const WrapperComponent = ({
         </View>
 
         {/* Timer in the middle */}
-        <View style={styles.timerContainer}>
-          <Text style={styles.timerText}>{timer}</Text>
-        </View>
+        {timer && (
+          <View style={styles.timerContainer}>
+            <Text style={styles.timerText}>{timer}</Text>
+          </View>
+        )}
 
         {/* Points Indicator */}
         <View style={styles.pointsContainer}>
-          <Text style={styles.pointsText}>
-            {points}{" "}
-            </Text>
-            <Image
-              source={require("../assets/star.png")}
-              style={styles.icon}
-            />
-            
-         
+          <Text style={styles.pointsText}>{points} </Text>
+          <Image source={require("../assets/star.png")} style={styles.icon} />
         </View>
       </View>
 
@@ -101,7 +96,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: "lightpink",
+    backgroundColor: "#d549d6",
     justifyContent: "center",
     alignItems: "center",
 
@@ -142,7 +137,7 @@ const styles = StyleSheet.create({
     backgroundColor: "skyblue",
     justifyContent: "space-around",
     alignItems: "center",
-    flexDirection : 'row' ,
+    flexDirection: "row",
     borderWidth: 4,
 
     borderColor: "navy",
