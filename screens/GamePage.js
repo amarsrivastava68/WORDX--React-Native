@@ -1,6 +1,7 @@
-import React, { useState, useRef ,Image } from "react";
+import React, { useState, useRef, useEffect, useCallback  , useContext} from "react";
 import { isCommonWord } from "../utils/ValidityChecker";
 import { FontAwesome } from '@expo/vector-icons'; // If using Expo
+
 import {
   View,
   Text,
@@ -8,14 +9,50 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  BackHandler,
+  Alert
 } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
 import WrapperComponent from "../components/Wrapper";
+import { UserContext } from "../context/userContext";
 
-const GamePage = ({ route }) => {
+const GamePage = ({ route, navigation }) => {
   const { randomLetters } = route.params;
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [submittedWords, setSubmittedWords] = useState([]); // Store entered words
   const inputRefs = useRef([]);
+ 
+
+  const { userName,  setValidWords } = useContext(UserContext); 
+
+  
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        Alert.alert(
+          "Hold on!",
+          "Are you sure you want to go back? Your progress will be lost.",
+          [
+            {
+              text: "Cancel",
+              onPress: () => null,
+              style: "cancel"
+            },
+            { text: "YES", onPress: () => navigation.goBack() }
+          ]
+        );
+        return true; // Prevent default back behavior
+      };
+
+      // Add back button event listener
+      BackHandler.addEventListener("hardwareBackPress", onBackPress);
+
+      return () =>
+        // Remove the event listener when the screen is unfocused or unmounted
+        BackHandler.removeEventListener("hardwareBackPress", onBackPress);
+        
+    }, [navigation])
+  );
 
   const handleInputChange = (index, value) => {
     const newOtp = [...otp];
@@ -39,12 +76,21 @@ const GamePage = ({ route }) => {
   const handleSubmit = () => {
     const enteredString = otp.join("");
     if (enteredString.trim()) {
-      // Save the entered string and reset the OTP inputs
-      setSubmittedWords([...submittedWords, enteredString]);
+      setSubmittedWords(prev => [...prev, enteredString]);
+      if (isCommonWord(enteredString)) {
+        setValidWords(prev => {
+          const newValidWords = [...prev, enteredString];
+          console.log("Updated valid words:", newValidWords);
+          return newValidWords;
+        });
+      }
       setOtp(["", "", "", "", "", ""]);
-      inputRefs.current[0].focus(); // Focus on the first input
+      inputRefs.current[0].focus();
     }
   };
+
+  // ... (rest of the component remains the same)
+
 
   return (
     <WrapperComponent
@@ -52,10 +98,14 @@ const GamePage = ({ route }) => {
       onVolumePress={() => alert("Volume")}
       onDarkModePress={() => alert("Dark Mode")}
       timer={true}
+      navigation= {navigation}
+      
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         {/* Dice Letters Display */}
         <View>
+        <Text style={styles.instructionText}>hello {userName}</Text>
+
           <Text style={styles.instructionText}>Player Instructions:</Text>
           <View style={styles.instructionsList}>
             <Text style={styles.instructionItem}>
@@ -148,13 +198,15 @@ const styles = StyleSheet.create({
   },
   diceContainer: {
     flexDirection: "row", // Arrange buttons in a row
-    justifyContent: "space-around", // Distribute space evenly
+    justifyContent: "center", // Distribute space evenly
     width: "100%", // Control the width of the dice area
     marginVertical: 20, // Add space above and below
+    gap: 10 ,
   },
   diceButton: {
-    width: 60,
-    height: 60,
+    width: 50,
+    height: 50,
+    
     backgroundColor: "navy",
     justifyContent: "center",
     alignItems: "center",
@@ -177,14 +229,14 @@ const styles = StyleSheet.create({
   },
   otpContainer: {
     flexDirection: "row", // Arrange inputs in a row
-    gap: 8,
+    gap: 10,
     justifyContent: "center", // Space them out evenly
-    width: "80%", // Control the width of the OTP area
+    width: "100%", // Control the width of the OTP area
     marginVertical: 20, // Adds space above and below
   },
   otpInput: {
-    width: 60, // Width of each input box
-    height: 60, // Height of each input box
+    width: 50, // Width of each input box
+    height: 50, // Height of each input box
     borderWidth: 1,
     borderColor: "black",
     borderRadius: 8,
@@ -231,7 +283,7 @@ const styles = StyleSheet.create({
     gap: 10, // Add a gap between both columns and rows
   },
   wordBox: {
-    width: "30%", // Each word takes 30% of the row (for 3-column grid)
+    width: 100, // Each word takes 30% of the row (for 3-column grid)
     padding: 10,
     marginVertical: 5,
     backgroundColor: "#f0f0f0",

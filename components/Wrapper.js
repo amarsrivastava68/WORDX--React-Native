@@ -18,6 +18,7 @@ const WrapperComponent = ({
   onVolumePress,
   onDarkModePress,
   buttons,
+  navigation
 }) => {
   const [countdown, setCountdown] = useState(60); // Timer state
 
@@ -30,6 +31,7 @@ const WrapperComponent = ({
         setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(interval); // Clear interval when it reaches 0
+            navigation.navigate("ResultPage");
             return 0; // Prevent going below 0
           }
           return prev - 1; // Decrease countdown
@@ -104,6 +106,7 @@ const WrapperComponent = ({
             </TouchableOpacity>
           ))}
       </View>
+      
     </SafeAreaView>
   );
 };
