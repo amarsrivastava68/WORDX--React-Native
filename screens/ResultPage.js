@@ -8,48 +8,44 @@ import {
   Image,
   BackHandler,
 } from "react-native";
-import WrapperComponent from "../components/Wrapper"; // Assuming the WrapperComponent is located here
-import RollDicePage from "./RollDicePage";
+import WrapperComponent from "../components/Wrapper";
+
 
 const ResultPage = ({ navigation }) => {
-  const { validWords, setScore } = useContext(UserContext);
+  const { validWords, setScore  } = useContext(UserContext);
 
-  const lettersGrid = validWords.map((word) => {
+  const lettersGrid = validWords?.map((word) => {
     const letters = word.split("");
     return [...letters, ...Array(6 - letters.length).fill("")];
   });
 
-  const points = validWords.length * 3;
+  const points = validWords ? validWords.length * 3: 0;
 
   const buttons = [
-    {
-      label: "Play Again",
-      onPress: () => {
-        navigation.navigate("RollDicePage");
-      }, // Navigate to RollDicePage on Play Again button press
-    },
+  
     {
       label: "NEXT",
       onPress: () => {},
     },
   ];
-
   useEffect(() => {
     if (validWords && validWords.length > 0) {
       setScore((prev) => prev + validWords.length * 3);
     }
-
+  
     const handleBackPress = () => {
       return true; 
     };
-
+  
     const backHandler = BackHandler.addEventListener(
       "hardwareBackPress",
       handleBackPress
     );
-
+  
+   
     return () => backHandler.remove();
   }, [validWords]);
+  
 
   return (
     <WrapperComponent
