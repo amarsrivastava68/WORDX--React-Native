@@ -1,5 +1,6 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect , useContext } from "react";
+import { UserContext } from "../context/userContext";
 import {
   View,
   Text,
@@ -13,33 +14,33 @@ import {
 
 const WrapperComponent = ({
   children,
-  points,
+  
   timer,
   onVolumePress,
   onDarkModePress,
-  buttons,
-  navigation
+  buttons,navigation
+  
 }) => {
-  const [countdown, setCountdown] = useState(60); // Timer state
-
+  const [countdown, setCountdown] = useState(60); 
+  const {score} = useContext(UserContext)
   useEffect(() => {
     let interval;
-
+    console.log('this is timer boolean ' , timer )
     if (timer) {
-      setCountdown(60); // Reset countdown when timer starts
+      setCountdown(60); 
       interval = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
-            clearInterval(interval); // Clear interval when it reaches 0
-            navigation.navigate("ResultPage");
-            return 0; // Prevent going below 0
+            clearInterval(interval); 
+            navigation.navigate("ResultPage")
+            return 0; 
           }
-          return prev - 1; // Decrease countdown
+          return prev - 1; 
         });
-      }, 1000); // Update every second
+      }, 1000); 
     }
 
-    // Cleanup the interval on component unmount or timer change
+   
     return () => clearInterval(interval);
   }, [timer]);
 
@@ -75,7 +76,7 @@ const WrapperComponent = ({
 
         {/* Points Indicator */}
         <View style={styles.pointsContainer}>
-          <Text style={styles.pointsText}>{points} </Text>
+          <Text style={styles.pointsText}>{score} </Text>
           <Image source={require("../assets/star.png")} style={styles.icon} />
         </View>
       </View>
@@ -114,7 +115,7 @@ const WrapperComponent = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "navy", // Change this to navy to match the footer
+    backgroundColor: "navy", 
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   topRow: {
@@ -184,8 +185,8 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   contentWrapper: {
-    backgroundColor: "navy", // This ensures the space outside rounded corners is navy
-    padding: 10, // Add padding here to create space between the edge and the white content
+    backgroundColor: "navy", 
+    padding: 10,
   },
   mainContent: {
     flex: 7,
@@ -194,7 +195,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 0,
     borderTopLeftRadius: 0,
     overflow: "hidden",
-    padding: 10, // Move padding here from contentWrapper
+    padding: 10, 
   },
   bottomRow: {
     flexDirection: "row",
@@ -232,7 +233,7 @@ const styles = StyleSheet.create({
   timerIcon: {
     width: 40,
     height: 40,
-    marginRight: 5, // Space between icon and text
+    marginRight: 5,
   },
   timerText: {
     fontSize: 30,

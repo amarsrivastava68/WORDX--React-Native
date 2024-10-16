@@ -1,35 +1,61 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { UserContext } from "../context/userContext";
-import { View, Text, StyleSheet, FlatList, Image } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  BackHandler,
+} from "react-native";
 import WrapperComponent from "../components/Wrapper"; // Assuming the WrapperComponent is located here
+import RollDicePage from "./RollDicePage";
 
-const ResultPage = () => {
-  const {validWords} = useContext(UserContext)
+const ResultPage = ({ navigation }) => {
+  const { validWords, setScore } = useContext(UserContext);
 
-  // Create a 2D array for the letters, filling empty spaces to have 6 columns
   const lettersGrid = validWords.map((word) => {
     const letters = word.split("");
-    // Fill with empty strings to ensure each row has 6 columns
     return [...letters, ...Array(6 - letters.length).fill("")];
   });
 
-  // Calculate points
   const points = validWords.length * 3;
 
-  // Prepare buttons
   const buttons = [
     {
+      label: "Play Again",
+      onPress: () => {
+        navigation.navigate("RollDicePage");
+      }, // Navigate to RollDicePage on Play Again button press
+    },
+    {
       label: "NEXT",
-      onPress: () => {}, // Trigger shake on button press
+      onPress: () => {},
     },
   ];
 
+  useEffect(() => {
+    if (validWords && validWords.length > 0) {
+      setScore((prev) => prev + validWords.length * 3);
+    }
+
+    const handleBackPress = () => {
+      return true; 
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      handleBackPress
+    );
+
+    return () => backHandler.remove();
+  }, [validWords]);
+
   return (
     <WrapperComponent
-      points={0} // Points can be customized based on your game logic
-      onVolumePress={() => alert("Volume")} // Placeholder for volume button
-      onDarkModePress={() => alert("Dark Mode")} // Placeholder for dark mode button
-      timer={false} // Disable timer for this page
+      onVolumePress={() => alert("Volume")} 
+      onDarkModePress={() => alert("Dark Mode")} 
+      timer={false} 
       buttons={buttons}
     >
       <View style={styles.container}>
@@ -43,7 +69,7 @@ const ResultPage = () => {
                   key={index}
                   style={[
                     styles.letterBox,
-                    { backgroundColor: letter !== "" ? "#28a745" : "white" }, // Change background color based on the letter
+                    { backgroundColor: letter !== "" ? "#28a745" : "white" },
                   ]}
                 >
                   <Text style={styles.letterText}>{letter}</Text>
@@ -58,7 +84,7 @@ const ResultPage = () => {
         {/* Banner with points */}
         <View style={styles.bannerContainer}>
           <Image
-            source={require("../assets/banner.png")} // Adjust the path as needed
+            source={require("../assets/banner.png")}
             style={styles.bannerImage}
           />
           <Text style={styles.bannerText}>You have won {points} points!</Text>
@@ -73,29 +99,29 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 20,
     alignItems: "center",
-    backgroundColor: "#f9f9f9", // Light background color
+    backgroundColor: "#f9f9f9", 
   },
   grid: {
-    justifyContent: "center", // Center the grid content
-    marginBottom: 20, // Space below the grid
+    justifyContent: "center", 
+    marginBottom: 20, 
   },
   row: {
-    flexDirection: "row", // Display letters in a row
-    justifyContent: "center", // Center the letters
-    marginBottom: 10, // Space between rows
+    flexDirection: "row", 
+    justifyContent: "center", 
+    marginBottom: 10, 
   },
   letterBox: {
-    width: 50, // Set width of each box (adjust as needed)
-    height: 50, // Set height of each box
+    width: 50, 
+    height: 50,
     justifyContent: "center",
     alignItems: "center",
-    margin: 5, // Margin between boxes
+    margin: 5, 
     borderRadius: 8,
-    elevation: 3, // Android shadow
-    shadowColor: "#000", // iOS shadow
-    shadowOffset: { width: 0, height: 2 }, // iOS shadow
-    shadowOpacity: 0.2, // iOS shadow
-    shadowRadius: 5, // iOS shadow
+    elevation: 3, 
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.2, 
+    shadowRadius: 5, 
   },
   letterText: {
     color: "white",
@@ -103,18 +129,17 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   bannerContainer: {
-    
     alignItems: "center",
   },
   bannerImage: {
-    height: 250, // Adjust as needed
-    width : 440 ,
-    resizeMode: "cover", // Make sure the image covers the area
+    height: 250, 
+    width: 440,
+    resizeMode: "cover", 
     position: "relative",
   },
   bannerText: {
     position: "absolute",
-    bottom: 105, // Position the text near the bottom of the image
+    bottom: 105, 
     left: 10,
     right: 10,
     color: "white",

@@ -13,10 +13,9 @@ import {
 } from "react-native";
 
 export default function InfoPage({ navigation }) {
-  const [name, setName] = useState(null);
+  const [name, setName] = useState('');
   const handleGetStarted = () => {
     if (name.trim()) {
-      // Navigate to the main screen
       navigation.navigate("RollDicePage", { userName: name });
     }
   };
@@ -26,13 +25,9 @@ export default function InfoPage({ navigation }) {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Outermost Circle (lightest color) */}
         <View style={styles.outerCircle1}>
-          {/* Second Circle (medium light color) */}
           <View style={styles.outerCircle2}>
-            {/* Innermost Circle (darkest color) */}
             <View style={styles.outerCircle3}>
-              {/* Main content with icon and brand name */}
               <Image
                 source={require("../assets/opened-book-3163 (5).png")} // Replace with your icon path
                 style={styles.icon}
@@ -42,7 +37,6 @@ export default function InfoPage({ navigation }) {
           </View>
         </View>
 
-        {/* New section below the outer circle */}
         <View style={styles.newSection}>
           <Text style={styles.paragraph}>
             Lorem Ipsum is simply dummy text of the printing and typesetting
@@ -55,8 +49,8 @@ export default function InfoPage({ navigation }) {
           <TextInput
             style={styles.inputField}
             placeholder="Enter your name"
-            value={name} // Set the value to the name state
-            onChangeText={setName} // Update the name state on change
+            value={name}
+            onChangeText={setName} 
           />
           <TouchableOpacity style={styles.button} onPress={handleGetStarted}>
             <Text style={styles.buttonText}>GET STARTED</Text>
@@ -69,52 +63,52 @@ export default function InfoPage({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1, // Ensure the container takes full height
+    flex: 1,
     backgroundColor: "#fff",
   },
   scrollContainer: {
-    flexGrow: 1, // Allow the ScrollView to grow
+    flexGrow: 1, 
     justifyContent: "space-around",
     alignItems: "center",
-    paddingBottom: 20, // Add some padding at the bottom
+    paddingBottom: 20,
   },
-  // Outermost Circle (lightest color)
+  
   outerCircle1: {
-    borderColor: "rgba(0, 0, 0, 0.1)", // Lightest border color
-    borderWidth: 3, // Border width
-    borderRadius: 175, // Must be more than the other circles for a perfect circle
-    width: 350, // Set width for outer circle
-    height: 350, // Set height for outer circle
+    borderColor: "rgba(0, 0, 0, 0.1)", 
+    borderWidth: 3, 
+    borderRadius: 175, 
+    width: 350, 
+    height: 350,
     alignItems: "center",
     justifyContent: "center",
-    margin: 20, // Cushion space between circles
+    margin: 20, 
   },
   // Second Circle (medium light color)
   outerCircle2: {
-    borderColor: "rgba(0, 0, 0, 0.5)", // Medium border color
-    borderWidth: 3, // Border width
-    borderRadius: 150, // Adjust radius slightly for inner circle
-    width: 300, // Set width for middle circle
-    height: 300, // Set height for middle circle
+    borderColor: "rgba(0, 0, 0, 0.5)", 
+    borderWidth: 3,
+    borderRadius: 150,
+    width: 300, 
+    height: 300,
     alignItems: "center",
     justifyContent: "center",
-    margin: 30, // Cushion space between circles
+    margin: 30, 
   },
   // Innermost Circle (darkest color)
   outerCircle3: {
-    borderColor: "black", // Darkest color for the innermost circle
-    borderWidth: 3, // Border width
-    borderRadius: 125, // Adjust radius slightly for innermost circle
-    width: 250, // Set width for innermost circle
-    height: 250, // Set height for innermost circle
+    borderColor: "black",
+    borderWidth: 3, 
+    borderRadius: 125,
+    width: 250, 
+    height: 250, 
     alignItems: "center",
     justifyContent: "center",
-    margin: 40, // Cushion space between circles
+    margin: 40, 
   },
   icon: {
-    width: 100, // Adjust the width as needed
-    height: 100, // Adjust the height as needed
-    marginBottom: 10, // Space between icon and brand name
+    width: 100, 
+    height: 100, 
+    marginBottom: 10, 
   },
   brandName: {
     fontSize: 50, // Adjust font size if needed to fit
@@ -132,15 +126,15 @@ const styles = StyleSheet.create({
   paragraph: {
     fontSize: 20,
     textAlign: "left",
-    marginBottom: 15, // Space between paragraph and input field
+    marginBottom: 15, 
   },
   inputField: {
-    width: "100%", // Full width for the input field
+    width: "100%", 
     padding: 10,
     borderWidth: 1,
     borderColor: "#ccc",
     borderRadius: 5,
-    marginBottom: 15, // Space between input field and button
+    marginBottom: 15, 
   },
   button: {
     backgroundColor: "#007BFF", // Primary color for the button

@@ -4,26 +4,23 @@ import { View, Text, StyleSheet, Image } from "react-native";
 export default function LandingPage({ navigation }) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace("InfoPage"); // Navigates to MainPage after 3 seconds
+      navigation.replace("InfoPage"); 
     }, 2000);
 
-    return () => clearTimeout(timer); // Clear timeout if component unmounts
+    return () => clearTimeout(timer); 
   }, [navigation]);
 
   return (
     <View style={styles.container}>
-      {/* Top 80% section with navy background */}
       <View style={styles.topSection}>
-        {/* Icon in the middle */}
         <Image
-          source={require("../assets/opened-book-3163 (3).png")} // Replace with your icon path
+          source={require("../assets/opened-book-3163 (3).png")} 
           style={styles.icon}
         />
         {/* Brand Name */}
         <Text style={styles.brandName}>WORDX</Text>
       </View>
 
-      {/* Bottom 25% section */}
       <View style={styles.bottomSection}>
         <Text style={styles.footerText}>
           Increase your knowledge with WordX!
@@ -53,11 +50,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   icon: {
-    width: 100, // Adjust the width as needed
-    height: 100, // Adjust the height as needed
-    marginBottom: 20, // Space between icon and brand name
-    borderRadius: 5, // Half of width and height for a perfect circle
-    backgroundColor: "transparent", // Ensure background remains transparent
+    width: 100, 
+    height: 100, 
+    marginBottom: 20, 
+    borderRadius: 5, 
+    backgroundColor: "transparent", 
     padding: 5,
     margin: 5,
   },

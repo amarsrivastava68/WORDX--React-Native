@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback  , useContext} from "react";
 import { isCommonWord } from "../utils/ValidityChecker";
-import { FontAwesome } from '@expo/vector-icons'; // If using Expo
-
+import { FontAwesome } from '@expo/vector-icons'; 
 import {
   View,
   Text,
@@ -19,13 +18,16 @@ import { UserContext } from "../context/userContext";
 const GamePage = ({ route, navigation }) => {
   const { randomLetters } = route.params;
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const[timer , setTimer] =useState(true)
   const [submittedWords, setSubmittedWords] = useState([]); // Store entered words
   const inputRefs = useRef([]);
  
 
-  const { userName,  setValidWords } = useContext(UserContext); 
+  const {   setValidWords } = useContext(UserContext); 
 
-  
+
+  useEffect(()=>{setTimer(true) ;  setSubmittedWords([]) ; setValidWords([])} , [])
+
   useFocusEffect(
     useCallback(() => {
       const onBackPress = () => {
@@ -41,14 +43,13 @@ const GamePage = ({ route, navigation }) => {
             { text: "YES", onPress: () => navigation.goBack() }
           ]
         );
-        return true; // Prevent default back behavior
+        return true; 
       };
 
-      // Add back button event listener
+      
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
       return () =>
-        // Remove the event listener when the screen is unfocused or unmounted
         BackHandler.removeEventListener("hardwareBackPress", onBackPress);
         
     }, [navigation])
@@ -59,7 +60,6 @@ const GamePage = ({ route, navigation }) => {
     newOtp[index] = value.toUpperCase();
     setOtp(newOtp);
 
-    // Move focus to the next input if the current input is filled and not the last input
     if (value && index < 5) {
       inputRefs.current[index + 1].focus();
     }
@@ -89,22 +89,21 @@ const GamePage = ({ route, navigation }) => {
     }
   };
 
-  // ... (rest of the component remains the same)
 
 
   return (
     <WrapperComponent
-      points={0}
+      
       onVolumePress={() => alert("Volume")}
       onDarkModePress={() => alert("Dark Mode")}
-      timer={true}
-      navigation= {navigation}
+      timer={timer}
+      navigation={ navigation}
+      
       
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
-        {/* Dice Letters Display */}
         <View>
-        <Text style={styles.instructionText}>hello {userName}</Text>
+        
 
           <Text style={styles.instructionText}>Player Instructions:</Text>
           <View style={styles.instructionsList}>
@@ -163,7 +162,7 @@ const GamePage = ({ route, navigation }) => {
           <Text style={styles.enterButtonText}>ENTER</Text>
         </TouchableOpacity>
 
-        {/* Your Words Section */}
+        {/*  Words Section */}
         <View style={styles.yourWordsContainer}>
           <Text style={styles.yourWordsTitle}>Your Words</Text>
           <View style={styles.wordsGrid}>
@@ -192,15 +191,15 @@ const GamePage = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: "space-around", // Center the content vertically
-    alignItems: "center", // Center the content horizontally
-    paddingBottom: 30, // Add space at the bottom to prevent cutting off content
+    justifyContent: "space-around", 
+    alignItems: "center", 
+    paddingBottom: 30, 
   },
   diceContainer: {
-    flexDirection: "row", // Arrange buttons in a row
-    justifyContent: "center", // Distribute space evenly
-    width: "100%", // Control the width of the dice area
-    marginVertical: 20, // Add space above and below
+    flexDirection: "row", 
+    justifyContent: "center", 
+    width: "100%", 
+    marginVertical: 20, 
     gap: 10 ,
   },
   diceButton: {
@@ -228,15 +227,15 @@ const styles = StyleSheet.create({
     textShadowRadius: 1,
   },
   otpContainer: {
-    flexDirection: "row", // Arrange inputs in a row
+    flexDirection: "row", 
     gap: 10,
-    justifyContent: "center", // Space them out evenly
-    width: "100%", // Control the width of the OTP area
-    marginVertical: 20, // Adds space above and below
+    justifyContent: "center",
+    width: "100%", 
+    marginVertical: 20, 
   },
   otpInput: {
-    width: 50, // Width of each input box
-    height: 50, // Height of each input box
+    width: 50, 
+    height: 50, 
     borderWidth: 1,
     borderColor: "black",
     borderRadius: 8,
@@ -267,9 +266,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   yourWordsContainer: {
-    marginTop: 30, // Space above the "Your Words" section
+    marginTop: 30, 
     alignItems: "center",
-    width: "80%", // Restrict the width for better formatting
+    width: "80%",
   },
   yourWordsTitle: {
     fontSize: 18,
@@ -279,11 +278,11 @@ const styles = StyleSheet.create({
   wordsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center", // Distribute words with spacing between them
-    gap: 10, // Add a gap between both columns and rows
+    justifyContent: "center", 
+    gap: 10, 
   },
   wordBox: {
-    width: 100, // Each word takes 30% of the row (for 3-column grid)
+    width: 100, 
     padding: 10,
     marginVertical: 5,
     backgroundColor: "#f0f0f0",
@@ -305,14 +304,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   instructionsList: {
-    marginLeft: 20, // Optional: to indent the instructions
+    marginLeft: 20, 
   },
   instructionItem: {
     fontSize: 16,
     marginBottom: 5,
   },
   disabledButton: {
-    backgroundColor: "gray", // Visually indicate that the button is disabled
+    backgroundColor: "gray", 
   },
 });
 
