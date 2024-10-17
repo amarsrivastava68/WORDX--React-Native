@@ -25,24 +25,30 @@ const WrapperComponent = ({
   const {score} = useContext(UserContext)
   useEffect(() => {
     let interval;
-    console.log('this is timer boolean ' , timer )
+    console.log('this is timer boolean ', timer);
+    
     if (timer) {
       setCountdown(60); 
       interval = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
-            clearInterval(interval); 
-            navigation.navigate("ResultPage")
-            return 0; 
+            clearInterval(interval);
+            
+            // Delay the navigation by 500ms
+            setTimeout(() => {
+              navigation.navigate("ResultPage");
+            }, 500);
+  
+            return 0;
           }
-          return prev - 1; 
+          return prev - 1;
         });
-      }, 1000); 
+      }, 1000);
     }
-
-   
+  
     return () => clearInterval(interval);
   }, [timer]);
+  
 
   return (
     <SafeAreaView style={styles.safeArea}>

@@ -87,8 +87,9 @@ export default function RollDicePage({   navigation}) {
     { left: 300, top: 290 },
   ];
   useEffect (()=>{
+    setRandomLetters([])
     setValidWords([])
-  } , [])
+  } , [navigation])
   return (
     <WrapperComponent
       

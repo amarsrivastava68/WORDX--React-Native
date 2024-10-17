@@ -1,0 +1,19 @@
+[
+    {
+      "name": "Bob Marley",
+      "score": 5
+    },
+    {
+      "name": "Taylor Fedror",
+      "score": 10
+    },
+    {
+        "name": "John Doe",
+        "score": 7
+      },
+    {
+      "name": "Alice Simpson",
+      "score": 15
+    }
+  ]
+  

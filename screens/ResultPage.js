@@ -22,11 +22,14 @@ const ResultPage = ({ navigation }) => {
   const points = validWords ? validWords.length * 3: 0;
 
   const buttons = [
-  
+    {
+      label: "PLAY AGAIN",
+      onPress: () => {navigation.navigate("RollDicePage")},
+    },
     {
       label: "NEXT",
-      onPress: () => {},
-    },
+      onPress: () => {navigation.navigate("LeaderBoardPage")},
+    }, 
   ];
   useEffect(() => {
     if (validWords && validWords.length > 0) {
