@@ -8,11 +8,14 @@ import {
   BackHandler,
 } from "react-native";
 import WrapperComponent from "../components/Wrapper";
-import { UserContext  , actionTypes} from "../context/userContext";
+import { UserContext, actionTypes } from "../context/userContext";
 
 const LastPage = ({ navigation }) => {
-    const {state : { userName} , dispatch } = useContext(UserContext);
-    const [newName, setNewName] = useState("");
+  const {
+    state: { userName },
+    dispatch,
+  } = useContext(UserContext);
+  const [newName, setNewName] = useState("");
 
   const buttons = [
     {
@@ -30,12 +33,7 @@ const LastPage = ({ navigation }) => {
   ];
 
   return (
-    <WrapperComponent
-      onVolumePress={() => alert("Volume")}
-      onDarkModePress={() => alert("Dark Mode")}
-      timer={false}
-      buttons={buttons}
-    >
+    <WrapperComponent timer={false} buttons={buttons}>
       <View style={styles.topSection}>
         <Text style={styles.username}>{userName}</Text>
         <TextInput
@@ -47,7 +45,7 @@ const LastPage = ({ navigation }) => {
         <Pressable
           style={styles.updateButton}
           onPress={() => {
-            dispatch({type : actionTypes.SET_USER_NAME , payload : newName});
+            dispatch({ type: actionTypes.SET_USER_NAME, payload: newName });
             alert(`Name updated to: ${newName}`);
             setNewName("");
           }}
@@ -99,7 +97,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 10,
     paddingHorizontal: 10,
-    borderRadius : 5 
+    borderRadius: 5,
   },
   updateButton: {
     backgroundColor: "navy", // Navy background for the button
@@ -114,11 +112,11 @@ const styles = StyleSheet.create({
   },
   statisticsContainer: {
     marginTop: 20,
-    
+
     padding: 30,
     alignItems: "center",
-    width: "100%", 
-    alignSelf: "center", 
+    width: "100%",
+    alignSelf: "center",
   },
   statisticsHeading: {
     fontSize: 24,
@@ -129,7 +127,7 @@ const styles = StyleSheet.create({
   statBlock: {
     backgroundColor: "navy",
     flexDirection: "row",
-    justifyContent : 'space-between' ,
+    justifyContent: "space-between",
     padding: 25,
     borderRadius: 10,
     width: "100%", // Set the width of the statistic blocks to fill the container
@@ -147,7 +145,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#fff",
     textAlign: "center",
-    
   },
 });
 

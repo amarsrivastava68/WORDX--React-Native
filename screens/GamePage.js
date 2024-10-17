@@ -12,7 +12,7 @@ import {
   Text,
   StyleSheet,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   ScrollView,
   BackHandler,
   Alert,
@@ -20,18 +20,18 @@ import {
 import { useFocusEffect } from "@react-navigation/native";
 import WrapperComponent from "../components/Wrapper";
 import { UserContext, actionTypes } from "../context/userContext";
-
+import { SettingsContext } from "../context/settingsContext";
 const GamePage = ({ route, navigation }) => {
   const { randomLetters } = route.params;
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [submittedWords, setSubmittedWords] = useState([]); // Store entered words
   const inputRefs = useRef([]);
-  const { dispatch  , state} = useContext(UserContext);
+  const { dispatch, state } = useContext(UserContext);
+  const { settingsState :{isDarkMode} } = useContext(SettingsContext); 
 
   useEffect(() => {
     setSubmittedWords([]);
     dispatch({ type: actionTypes.RESET_VALID_WORDS });
-
   }, []);
 
   useFocusEffect(
@@ -80,50 +80,61 @@ const GamePage = ({ route, navigation }) => {
   const handleSubmit = () => {
     const enteredString = otp.join("");
     if (enteredString.trim()) {
-      setSubmittedWords((prev) => [...prev, enteredString]); 
-      if (isCommonWord(enteredString)) {
-        dispatch({ type: actionTypes.SET_VALID_WORDS, payload: enteredString }); 
-      }
+      setSubmittedWords((prev) => {
+        if (!prev.includes(enteredString)) {
+          // Only add the word if it's not already in submittedWords
+          const updatedWords = [...prev, enteredString];
+          
+          // Dispatch if it's a common word
+          if (isCommonWord(enteredString)) {
+            dispatch({ type: actionTypes.SET_VALID_WORDS, payload: enteredString });
+          }
+          
+          return updatedWords;
+        } else {
+          // Show alert if the word is already present
+          Alert.alert("Duplicate Entry", "This word has already been submitted.");
+          return prev;
+        }
+      });
+  
+      // Reset the OTP input fields and focus on the first one
       setOtp(["", "", "", "", "", ""]);
       inputRefs.current[0].focus();
     }
   };
+  
 
   return (
-    <WrapperComponent
-      onVolumePress={() => alert("Volume")}
-      onDarkModePress={() => alert("Dark Mode")}
-      timer={true}
-      navigation={navigation}
-    >
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+    <WrapperComponent timer={true} navigation={navigation}>
+      <ScrollView contentContainerStyle={styles(isDarkMode).scrollContainer}>
         <View>
-          <Text style={styles.instructionText}>Player Instructions:</Text>
-          <View style={styles.instructionsList}>
-            <Text style={styles.instructionItem}>
+          <Text style={styles(isDarkMode).instructionText}>Player Instructions:</Text>
+          <View style={styles(isDarkMode).instructionsList}>
+            <Text style={styles(isDarkMode).instructionItem}>
               • Words less than 3 letters will not be accepted
             </Text>
-            <Text style={styles.instructionItem}>
+            <Text style={styles(isDarkMode).instructionItem}>
               • Cannot use any other letter other than on dice.
             </Text>
           </View>
         </View>
 
-        <View style={styles.diceContainer}>
+        <View style={styles(isDarkMode).diceContainer}>
           {randomLetters &&
             randomLetters.map((letter, index) => (
-              <View key={index} style={styles.diceButton}>
-                <Text style={styles.diceText}>{letter}</Text>
+              <View key={index} style={styles(isDarkMode).diceButton}>
+                <Text style={styles(isDarkMode).diceText}>{letter}</Text>
               </View>
             ))}
         </View>
 
         {/* OTP Input Boxes */}
-        <View style={styles.otpContainer}>
+        <View style={styles(isDarkMode).otpContainer}>
           {otp.map((value, index) => (
             <TextInput
               key={index}
-              style={styles.otpInput}
+              style={styles(isDarkMode).otpInput}
               maxLength={1}
               value={value}
               onChangeText={(text) => handleInputChange(index, text)}
@@ -137,14 +148,14 @@ const GamePage = ({ route, navigation }) => {
         </View>
 
         {/* Enter Button */}
-        <TouchableOpacity
+        <Pressable
           style={[
-            styles.enterButton,
+            styles(isDarkMode).enterButton,
             (otp.filter((letter) => letter !== "").length < 3 ||
               otp.some(
                 (letter) => letter && !randomLetters.includes(letter)
               )) &&
-              styles.disabledButton,
+              styles(isDarkMode).disabledButton,
           ]}
           onPress={handleSubmit}
           disabled={
@@ -152,21 +163,21 @@ const GamePage = ({ route, navigation }) => {
             otp.some((letter) => letter && !randomLetters.includes(letter))
           }
         >
-          <Text style={styles.enterButtonText}>ENTER</Text>
-        </TouchableOpacity>
+          <Text style={styles(isDarkMode).enterButtonText}>ENTER</Text>
+        </Pressable>
 
         {/*  Words Section */}
-        <View style={styles.yourWordsContainer}>
-          <Text style={styles.yourWordsTitle}>Your Words</Text>
-          <View style={styles.wordsGrid}>
+        <View style={styles(isDarkMode).yourWordsContainer}>
+          <Text style={styles(isDarkMode).yourWordsTitle}>Your Words</Text>
+          <View style={styles(isDarkMode).wordsGrid}>
             {submittedWords.map((word, index) => (
-              <View key={index} style={styles.wordBox}>
+              <View key={index} style={styles(isDarkMode).wordBox}>
                 {isCommonWord(word) ? (
                   <FontAwesome name="check-circle" size={24} color="green" />
                 ) : (
                   <FontAwesome name="times-circle" size={24} color="red" />
                 )}
-                <Text style={styles.wordText}>{word}</Text>
+                <Text style={styles(isDarkMode).wordText}>{word}</Text>
               </View>
             ))}
           </View>
@@ -176,12 +187,13 @@ const GamePage = ({ route, navigation }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const styles = (isDarkMode) => StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
     justifyContent: "space-around",
     alignItems: "center",
     paddingBottom: 30,
+    backgroundColor: isDarkMode ? "black" : "white",
   },
   diceContainer: {
     flexDirection: "row",
@@ -193,26 +205,21 @@ const styles = StyleSheet.create({
   diceButton: {
     width: 50,
     height: 50,
-
-    backgroundColor: "navy",
+    backgroundColor: isDarkMode ? "darkgray" : "navy",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "black",
-    shadowColor: "black",
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.9,
-    shadowRadius: 8,
-    elevation: 10,
+    borderColor: isDarkMode ? "lightgray" : "black",
+
+    boxShadow: isDarkMode
+      ? '0px 2px 4px rgba(255, 255, 255, 0.1)' 
+      : '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   diceText: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "white",
-    textShadowColor: "#aaa",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 1,
+    color: isDarkMode ? "black" : "white",
   },
   otpContainer: {
     flexDirection: "row",
@@ -225,28 +232,25 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderWidth: 1,
-    borderColor: "black",
+    borderColor: isDarkMode ? "lightgray" : "black",
     borderRadius: 8,
     textAlign: "center",
     fontSize: 24,
-    backgroundColor: "white",
+    backgroundColor: isDarkMode ? "gray" : "white",
+    color: isDarkMode ? "white" : "black",
   },
   enterButton: {
-    backgroundColor: "#007BFF",
+    backgroundColor: isDarkMode ? "#0056b3" : "#007BFF",
     padding: 15,
     borderRadius: 10,
     width: "60%",
     marginHorizontal: 5,
     alignItems: "center",
     justifyContent: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+
+    boxShadow: isDarkMode
+      ? '0px 2px 4px rgba(255, 255, 255, 0.1)' 
+      : '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   enterButtonText: {
     color: "white",
@@ -262,6 +266,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+    color: isDarkMode ? "white" : "black",
   },
   wordsGrid: {
     flexDirection: "row",
@@ -273,7 +278,7 @@ const styles = StyleSheet.create({
     width: 100,
     padding: 10,
     marginVertical: 5,
-    backgroundColor: "#f0f0f0",
+    backgroundColor: isDarkMode ? "#303030" : "#f0f0f0",
     alignItems: "center",
     justifyContent: "center",
     borderRadius: 8,
@@ -283,11 +288,13 @@ const styles = StyleSheet.create({
   wordText: {
     fontSize: 16,
     fontWeight: "bold",
+    color: isDarkMode ? "white" : "black",
   },
   instructionText: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
+    color: isDarkMode ? "white" : "black",
   },
   instructionsList: {
     marginLeft: 20,
@@ -295,6 +302,7 @@ const styles = StyleSheet.create({
   instructionItem: {
     fontSize: 16,
     marginBottom: 5,
+    color: isDarkMode ? "white" : "black",
   },
   disabledButton: {
     backgroundColor: "gray",

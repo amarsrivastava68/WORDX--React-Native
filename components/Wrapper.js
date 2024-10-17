@@ -2,29 +2,30 @@ import React from "react";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../context/userContext";
 import {
+  SettingsContext,
+  settingsActionTypes,
+} from "../context/settingsContext";
+import {
   View,
+  Pressable,
   Text,
   StyleSheet,
-  TouchableOpacity,
+  
   Platform,
   StatusBar,
   Image,
   SafeAreaView,
 } from "react-native";
 
-const WrapperComponent = ({
-  children,
-
-  timer,
-  onVolumePress,
-  onDarkModePress,
-  buttons,
-  navigation,
-}) => {
+const WrapperComponent = ({ children, timer, buttons, navigation }) => {
   const [countdown, setCountdown] = useState(60);
   const {
     state: { score },
   } = useContext(UserContext);
+  const {
+    settingsState: { isDarkMode, isMuted },
+    settingsDispatch,
+  } = useContext(SettingsContext);
   useEffect(() => {
     let interval;
     if (timer) {
@@ -54,21 +55,29 @@ const WrapperComponent = ({
       <View style={styles.topRow}>
         {/* Volume and Dark Mode Icons */}
         <View style={styles.iconContainer}>
-          <TouchableOpacity onPress={onVolumePress} style={styles.iconWrapper}>
+          <Pressable
+            onPress={() => {
+              settingsDispatch({ type: settingsActionTypes.TOGGLE_MUTE });
+            }}
+            style={styles.iconWrapper}
+          >
             <Image
               source={require("../assets/volume-icon.png")}
               style={styles.icon}
             />
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={onDarkModePress}
+          </Pressable>
+          <Pressable
+            onPress={() => {
+
+              settingsDispatch({ type: settingsActionTypes.TOGGLE_DARK_MODE });
+            }}
             style={styles.iconWrapper}
           >
             <Image
               source={require("../assets/dark-mode-icon.png")}
               style={styles.icon}
             />
-          </TouchableOpacity>
+          </Pressable>
         </View>
 
         {/* Timer in the middle */}
@@ -104,13 +113,13 @@ const WrapperComponent = ({
 
         {!timer &&
           buttons.map((button, index) => (
-            <TouchableOpacity
+            <Pressable
               key={index}
               style={styles.button}
               onPress={button.onPress}
             >
               <Text style={styles.buttonText}>{button.label}</Text>
-            </TouchableOpacity>
+            </Pressable>
           ))}
       </View>
     </SafeAreaView>
@@ -200,7 +209,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 0,
     borderTopLeftRadius: 0,
     overflow: "hidden",
-    padding: 10,
+    
   },
   bottomRow: {
     flexDirection: "row",
@@ -220,13 +229,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+    
   },
   buttonText: {
     color: "white",

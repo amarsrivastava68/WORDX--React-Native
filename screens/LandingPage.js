@@ -4,20 +4,20 @@ import { View, Text, StyleSheet, Image } from "react-native";
 export default function LandingPage({ navigation }) {
   useEffect(() => {
     const timer = setTimeout(() => {
-      navigation.replace("InfoPage"); 
+      navigation.replace("InfoPage");
     }, 2000);
 
-    return () => clearTimeout(timer); 
+    return () => clearTimeout(timer);
   }, [navigation]);
 
   return (
     <View style={styles.container}>
       <View style={styles.topSection}>
         <Image
-          source={require("../assets/opened-book-3163 (3).png")} 
+          source={require("../assets/opened-book-3163 (3).png")}
           style={styles.icon}
         />
-        
+
         <Text style={styles.brandName}>WORDX</Text>
       </View>
 
@@ -50,11 +50,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   icon: {
-    width: 100, 
-    height: 100, 
-    marginBottom: 20, 
-    borderRadius: 5, 
-    backgroundColor: "transparent", 
+    width: 100,
+    height: 100,
+    marginBottom: 20,
+    borderRadius: 5,
+    backgroundColor: "transparent",
     padding: 5,
     margin: 5,
   },

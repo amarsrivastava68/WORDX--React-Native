@@ -1,13 +1,22 @@
-import React, { useRef  , useState , useEffect , useContext} from "react";
+import React, { useRef, useState, useEffect, useContext } from "react";
 
-import { View, Image, StyleSheet, Alert, Animated, TouchableOpacity, Text } from "react-native";
+import {
+  View,
+  
+  StyleSheet,
+  
+  Animated,
+  Pressable,
+  Text,
+} from "react-native";
 import WrapperComponent from "../components/Wrapper";
-import { UserContext , actionTypes } from "../context/userContext";
+import { UserContext, actionTypes } from "../context/userContext";
+import { SettingsContext } from "../context/settingsContext";
 
 const getRandomLetters = () => {
   const letters = "ABCDEFGHIJKMNOPUVWXZ".split("");
   const guaranteedLetters = "AEIOUSTRYL".split("");
-  
+
   const selectedGuaranteedLetters = [];
   while (selectedGuaranteedLetters.length < 2) {
     const randomIndex = Math.floor(Math.random() * guaranteedLetters.length);
@@ -19,7 +28,8 @@ const getRandomLetters = () => {
   while (randomLetters.length < 4) {
     const randomIndex = Math.floor(Math.random() * letters.length);
     const letter = letters.splice(randomIndex, 1)[0]; // Remove and return letter
-    if (!selectedGuaranteedLetters.includes(letter)) { // Ensure no duplicates
+    if (!selectedGuaranteedLetters.includes(letter)) {
+      // Ensure no duplicates
       randomLetters.push(letter);
     }
   }
@@ -34,9 +44,10 @@ const getRandomLetters = () => {
   return finalLetters;
 };
 
-export default function RollDicePage({   navigation}) {
-  const {dispatch} = useContext(UserContext)
-  const [randomLetters , setRandomLetters] = useState(null)
+export default function RollDicePage({ navigation }) {
+  const { settingsState :{isDarkMode} } = useContext(SettingsContext); 
+  const { dispatch } = useContext(UserContext);
+  const [randomLetters, setRandomLetters] = useState(null);
 
   const shakeAnimation = useRef(new Animated.Value(0)).current;
 
@@ -44,12 +55,12 @@ export default function RollDicePage({   navigation}) {
     Animated.loop(
       Animated.sequence([
         Animated.timing(shakeAnimation, {
-          toValue: 10, 
+          toValue: 10,
           duration: 50,
           useNativeDriver: true,
         }),
         Animated.timing(shakeAnimation, {
-          toValue: -10, 
+          toValue: -10,
           duration: 50,
           useNativeDriver: true,
         }),
@@ -58,13 +69,12 @@ export default function RollDicePage({   navigation}) {
     ).start(() => {
       const letters = getRandomLetters();
       setRandomLetters(letters);
-      
+
       setTimeout(() => {
-        navigation.navigate('GamePage', {  randomLetters: letters });
+        navigation.navigate("GamePage", { randomLetters: letters });
       }, 1000);
     });
   };
-
 
   const buttons = [
     {
@@ -77,7 +87,6 @@ export default function RollDicePage({   navigation}) {
     transform: [{ translateX: shakeAnimation }],
   };
 
-
   const dicePositions = [
     { left: 50, top: 100 },
     { left: 100, top: 200 },
@@ -86,33 +95,28 @@ export default function RollDicePage({   navigation}) {
     { left: 250, top: 140 },
     { left: 300, top: 290 },
   ];
-  useEffect (()=>{
-    setRandomLetters([])
-  } , [])
+  useEffect(() => {
+    setRandomLetters([]);
+  }, []);
   return (
-    <WrapperComponent
-      
-      onVolumePress={() => alert("Volume")}
-      onDarkModePress={() => alert("Dark Mode")}
-      timer = {false}
-      buttons={buttons}
-    >
-      <View style={styles.container}>
-        <View style={styles.diceContainer}>
-          {randomLetters && randomLetters.map((letter, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.diceButton, dicePositions[index]]} 
-            >
-              <Text style={styles.diceText}>{letter}</Text>
-            </TouchableOpacity>
-          ))}
+    <WrapperComponent timer={false} buttons={buttons}>
+      <View style={styles(isDarkMode).container}>
+        <View style={styles(isDarkMode).diceContainer}>
+          {randomLetters &&
+            randomLetters.map((letter, index) => (
+              <Pressable
+                key={index}
+                style={[styles(isDarkMode).diceButton, dicePositions[index]]}
+              >
+                <Text style={styles(isDarkMode).diceText}>{letter}</Text>
+              </Pressable>
+            ))}
         </View>
 
-        <View style={styles.imageContainer}>
+        <View style={styles(isDarkMode).imageContainer}>
           <Animated.Image
-            source={require("../assets/cup.png")} 
-            style={[styles.cupImage, shakeStyle]} 
+            source={require("../assets/cup.png")}
+            style={[styles(isDarkMode).cupImage, shakeStyle]}
             resizeMode="contain"
           />
         </View>
@@ -121,51 +125,49 @@ export default function RollDicePage({   navigation}) {
   );
 }
 
-const styles = StyleSheet.create({
+const styles = (isDarkMode) => StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-between",
+    backgroundColor: isDarkMode ? 'black' : 'white',
   },
   diceContainer: {
-    position: "absolute", 
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
   },
   diceButton: {
-    position: "absolute", 
+    position: "absolute",
     width: 60,
     height: 60,
-    backgroundColor: "navy",
+    backgroundColor: isDarkMode ? "darkgray" : "navy",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: "black",
-    shadowColor: "black", 
-    shadowOffset: { width: 2, height: 2 },
-    shadowOpacity: 0.9,
-    shadowRadius: 8,
-    elevation: 10, 
+    borderColor: isDarkMode ? "lightgray" : "black",
+
+    boxShadow: isDarkMode
+      ? '0px 2px 4px rgba(255, 255, 255, 0.1)' 
+      : '0px 2px 4px rgba(0, 0, 0, 0.1)',
   },
   diceText: {
     fontSize: 24,
     fontWeight: "bold",
-    color: "white",
-    textShadowColor: "#aaa", 
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 1,
+    color: isDarkMode ? "black" : "white",
   },
   imageContainer: {
     flex: 1,
-    justifyContent: "flex-end", 
-    alignItems: "center", 
+    justifyContent: "flex-end",
+    alignItems: "center",
   },
   cupImage: {
-    width: 300, 
-    height: 300, 
-    marginBottom: 20, 
+    width: 300,
+    height: 300,
+    marginBottom: 20,
+    
   },
 });
 

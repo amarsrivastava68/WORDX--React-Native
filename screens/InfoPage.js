@@ -5,7 +5,7 @@ import {
   StyleSheet,
   Image,
   TextInput,
-  TouchableOpacity,
+  Pressable,
   KeyboardAvoidingView,
   ScrollView,
   Platform,
@@ -60,9 +60,9 @@ export default function InfoPage({ navigation }) {
             value={name}
             onChangeText={setName} 
           />
-          <TouchableOpacity style={styles.button} onPress={handleGetStarted}>
+          <Pressable style={styles.button} onPress={handleGetStarted}>
             <Text style={styles.buttonText}>GET STARTED</Text>
-          </TouchableOpacity>
+          </Pressable>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>
@@ -149,13 +149,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 5,
+   
   },
   buttonText: {
     color: "white",

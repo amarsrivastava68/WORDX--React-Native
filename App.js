@@ -9,26 +9,28 @@ import ResultPage from "./screens/ResultPage";
 import LeaderBoardPage from "./screens/LeaderBoardPage";
 import LastPage from "./screens/LastPage";
 import { UserProvider } from "./context/userContext";
-
+import { SettingsProvider } from "./context/settingsContext";
 const Stack = createStackNavigator();
 
 export default function App() {
   return (
     <UserProvider>
-      <NavigationContainer>
-        <Stack.Navigator
-          initialRouteName="LandingPage"
-          screenOptions={{ headerShown: false }}
-        >
-          <Stack.Screen name="LandingPage" component={LandingPage} />
-          <Stack.Screen name="InfoPage" component={InfoPage} />
-          <Stack.Screen name="RollDicePage" component={RollDicePage} />
-          <Stack.Screen name="GamePage" component={GamePage} />
-          <Stack.Screen name="ResultPage" component={ResultPage} />
-          <Stack.Screen name="LeaderBoardPage" component={LeaderBoardPage} />
-          <Stack.Screen name="LastPage" component={LastPage} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <SettingsProvider>
+        <NavigationContainer>
+          <Stack.Navigator
+            initialRouteName="LandingPage"
+            screenOptions={{ headerShown: false }}
+          >
+            <Stack.Screen name="LandingPage" component={LandingPage} />
+            <Stack.Screen name="InfoPage" component={InfoPage} />
+            <Stack.Screen name="RollDicePage" component={RollDicePage} />
+            <Stack.Screen name="GamePage" component={GamePage} />
+            <Stack.Screen name="ResultPage" component={ResultPage} />
+            <Stack.Screen name="LeaderBoardPage" component={LeaderBoardPage} />
+            <Stack.Screen name="LastPage" component={LastPage} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SettingsProvider>
     </UserProvider>
   );
 }
