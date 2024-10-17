@@ -128,9 +128,9 @@ const styles = StyleSheet.create({
   },
   statText: {
     fontSize: 14,
-    color: '#FFD700', // Golden color
+    color: '#FFD700', 
     textAlign: 'center',
-    fontWeight: 'bold', // Bold text
+    fontWeight: 'bold', 
   },
 
   

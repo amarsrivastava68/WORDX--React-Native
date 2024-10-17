@@ -17,7 +17,7 @@ export default function LandingPage({ navigation }) {
           source={require("../assets/opened-book-3163 (3).png")} 
           style={styles.icon}
         />
-        {/* Brand Name */}
+        
         <Text style={styles.brandName}>WORDX</Text>
       </View>
 
