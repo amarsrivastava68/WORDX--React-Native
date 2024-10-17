@@ -6,7 +6,7 @@ import dummyUsers from '../utils/dummy-users.json';
 
 const LeaderBoardPage = ({ navigation }) => {
   const [users, setUsers] = useState(dummyUsers);
-  const { userName, score } = useContext(UserContext);
+  const {state : { userName, score} } = useContext(UserContext);
 
   const sortedUsers = [...users, { name: userName, score: score }].sort((a, b) => b.score - a.score);
 

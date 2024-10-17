@@ -2,10 +2,10 @@ import React, { useRef  , useState , useEffect , useContext} from "react";
 
 import { View, Image, StyleSheet, Alert, Animated, TouchableOpacity, Text } from "react-native";
 import WrapperComponent from "../components/Wrapper";
-import { UserContext } from "../context/userContext";
+import { UserContext , actionTypes } from "../context/userContext";
 
 const getRandomLetters = () => {
-  const letters = "ABCDEFGHIJKMNOPQRSTUVWXZ".split("");
+  const letters = "ABCDEFGHIJKMNOPUVWXZ".split("");
   const guaranteedLetters = "AEIOUSTRYL".split("");
   
   const selectedGuaranteedLetters = [];
@@ -35,7 +35,7 @@ const getRandomLetters = () => {
 };
 
 export default function RollDicePage({   navigation}) {
-  const {setValidWords} = useContext(UserContext)
+  const {dispatch} = useContext(UserContext)
   const [randomLetters , setRandomLetters] = useState(null)
 
   const shakeAnimation = useRef(new Animated.Value(0)).current;
@@ -88,8 +88,7 @@ export default function RollDicePage({   navigation}) {
   ];
   useEffect (()=>{
     setRandomLetters([])
-    setValidWords([])
-  } , [navigation])
+  } , [])
   return (
     <WrapperComponent
       

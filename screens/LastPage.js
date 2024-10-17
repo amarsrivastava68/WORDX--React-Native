@@ -8,11 +8,11 @@ import {
   BackHandler,
 } from "react-native";
 import WrapperComponent from "../components/Wrapper";
-import { UserContext } from "../context/userContext";
+import { UserContext  , actionTypes} from "../context/userContext";
 
 const LastPage = ({ navigation }) => {
-  const { userName } = useContext(UserContext);
-  const [newName, setNewName] = useState("");
+    const {state : { userName} , dispatch } = useContext(UserContext);
+    const [newName, setNewName] = useState("");
 
   const buttons = [
     {
@@ -24,7 +24,7 @@ const LastPage = ({ navigation }) => {
     {
       label: "QUIT",
       onPress: () => {
-        BackHandler.exitApp(); // Close the application
+        BackHandler.exitApp();
       },
     },
   ];
@@ -47,6 +47,7 @@ const LastPage = ({ navigation }) => {
         <Pressable
           style={styles.updateButton}
           onPress={() => {
+            dispatch({type : actionTypes.SET_USER_NAME , payload : newName});
             alert(`Name updated to: ${newName}`);
             setNewName("");
           }}
@@ -98,6 +99,7 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 10,
     paddingHorizontal: 10,
+    borderRadius : 5 
   },
   updateButton: {
     backgroundColor: "navy", // Navy background for the button

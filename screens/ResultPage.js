@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { UserContext } from "../context/userContext";
+import { UserContext , actionTypes } from "../context/userContext";
 import {
   View,
   Text,
@@ -12,14 +12,14 @@ import WrapperComponent from "../components/Wrapper";
 
 
 const ResultPage = ({ navigation }) => {
-  const { validWords, setScore  } = useContext(UserContext);
+  const {state  , dispatch} = useContext(UserContext);
 
-  const lettersGrid = validWords?.map((word) => {
+  const lettersGrid = state.validWords?.map((word) => {
     const letters = word.split("");
     return [...letters, ...Array(6 - letters.length).fill("")];
   });
 
-  const points = validWords ? validWords.length * 3: 0;
+  const points = state.validWords ? state.validWords.length * 3: 0;
 
   const buttons = [
     {
@@ -32,8 +32,8 @@ const ResultPage = ({ navigation }) => {
     }, 
   ];
   useEffect(() => {
-    if (validWords && validWords.length > 0) {
-      setScore((prev) => prev + validWords.length * 3);
+    if (state.validWords && state.validWords.length > 0) {
+      dispatch({type : actionTypes.SET_SCORE , payload : state.validWords.length * 3} );
     }
   
     const handleBackPress = () => {
@@ -47,7 +47,7 @@ const ResultPage = ({ navigation }) => {
   
    
     return () => backHandler.remove();
-  }, [validWords]);
+  }, [state.validWords]);
   
 
   return (

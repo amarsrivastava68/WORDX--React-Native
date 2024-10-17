@@ -1,5 +1,4 @@
-import React from "react";
-import { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   View,
   Text,
@@ -11,14 +10,23 @@ import {
   ScrollView,
   Platform,
 } from "react-native";
+import { UserContext, actionTypes } from "../context/userContext";
 
 export default function InfoPage({ navigation }) {
+  const { dispatch } = useContext(UserContext);
   const [name, setName] = useState('');
+
   const handleGetStarted = () => {
     if (name.trim()) {
-      navigation.navigate("RollDicePage", { userName: name });
+      dispatch({type:actionTypes.RESET_USER})
+      dispatch({ type: actionTypes.SET_USER_NAME, payload: name });
+      navigation.navigate("RollDicePage");
+    }
+    else{
+      alert('Name cannot be empty')
     }
   };
+
   return (
     <KeyboardAvoidingView
       style={styles.container}
@@ -29,7 +37,7 @@ export default function InfoPage({ navigation }) {
           <View style={styles.outerCircle2}>
             <View style={styles.outerCircle3}>
               <Image
-                source={require("../assets/opened-book-3163 (5).png")} // Replace with your icon path
+                source={require("../assets/opened-book-3163 (5).png")}
                 style={styles.icon}
               />
               <Text style={styles.brandName}>WORDX</Text>
@@ -83,7 +91,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 20, 
   },
-  // Second Circle (medium light color)
   outerCircle2: {
     borderColor: "rgba(0, 0, 0, 0.5)", 
     borderWidth: 3,
@@ -94,7 +101,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     margin: 30, 
   },
-  // Innermost Circle (darkest color)
   outerCircle3: {
     borderColor: "black",
     borderWidth: 3, 
@@ -111,17 +117,16 @@ const styles = StyleSheet.create({
     marginBottom: 10, 
   },
   brandName: {
-    fontSize: 50, // Adjust font size if needed to fit
+    fontSize: 50,
     color: "black",
     fontWeight: "bold",
-    letterSpacing: 2, // To add some space between letters
+    letterSpacing: 2,
   },
-  // New section styles
   newSection: {
     alignItems: "center",
     justifyContent: "flex-start",
-    width: "100%", // Full width for the new section
-    padding: 20, // Add padding for spacing
+    width: "100%",
+    padding: 20,
   },
   paragraph: {
     fontSize: 20,
@@ -137,20 +142,20 @@ const styles = StyleSheet.create({
     marginBottom: 15, 
   },
   button: {
-    backgroundColor: "#007BFF", // Primary color for the button
+    backgroundColor: "#007BFF",
     padding: 15,
-    borderRadius: 10, // Increased radius for a more rounded effect
-    width: "100%", // Full width for the button
+    borderRadius: 10,
+    width: "100%",
     alignItems: "center",
-    justifyContent: "center", // Center the button text
-    elevation: 5, // Adds a shadow effect on Android
-    shadowColor: "#000", // Shadow color for iOS
+    justifyContent: "center",
+    elevation: 5,
+    shadowColor: "#000",
     shadowOffset: {
-      width: 0, // Horizontal shadow offset
-      height: 2, // Vertical shadow offset
+      width: 0,
+      height: 2,
     },
-    shadowOpacity: 0.3, // Opacity of the shadow
-    shadowRadius: 5, // Radius of the shadow
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
   },
   buttonText: {
     color: "white",

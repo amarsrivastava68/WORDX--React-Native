@@ -1,6 +1,12 @@
-import React, { useState, useRef, useEffect, useCallback  , useContext} from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  useCallback,
+  useContext,
+} from "react";
 import { isCommonWord } from "../utils/ValidityChecker";
-import { FontAwesome } from '@expo/vector-icons'; 
+import { FontAwesome } from "@expo/vector-icons";
 import {
   View,
   Text,
@@ -9,24 +15,24 @@ import {
   TouchableOpacity,
   ScrollView,
   BackHandler,
-  Alert
+  Alert,
 } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 import WrapperComponent from "../components/Wrapper";
-import { UserContext } from "../context/userContext";
+import { UserContext, actionTypes } from "../context/userContext";
 
 const GamePage = ({ route, navigation }) => {
   const { randomLetters } = route.params;
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-  const[timer , setTimer] =useState(true)
   const [submittedWords, setSubmittedWords] = useState([]); // Store entered words
   const inputRefs = useRef([]);
- 
+  const { dispatch  , state} = useContext(UserContext);
 
-  const {   setValidWords } = useContext(UserContext); 
+  useEffect(() => {
+    setSubmittedWords([]);
+    dispatch({ type: actionTypes.RESET_VALID_WORDS });
 
-
-  useEffect(()=>{setTimer(true) ;  setSubmittedWords([]) ; setValidWords([])} , [])
+  }, []);
 
   useFocusEffect(
     useCallback(() => {
@@ -38,20 +44,18 @@ const GamePage = ({ route, navigation }) => {
             {
               text: "Cancel",
               onPress: () => null,
-              style: "cancel"
+              style: "cancel",
             },
-            { text: "YES", onPress: () => navigation.goBack() }
+            { text: "YES", onPress: () => navigation.goBack() },
           ]
         );
-        return true; 
+        return true;
       };
 
-      
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
 
       return () =>
         BackHandler.removeEventListener("hardwareBackPress", onBackPress);
-        
     }, [navigation])
   );
 
@@ -76,35 +80,24 @@ const GamePage = ({ route, navigation }) => {
   const handleSubmit = () => {
     const enteredString = otp.join("");
     if (enteredString.trim()) {
-      setSubmittedWords(prev => [...prev, enteredString]);
+      setSubmittedWords((prev) => [...prev, enteredString]); 
       if (isCommonWord(enteredString)) {
-        setValidWords(prev => {
-          const newValidWords = [...prev, enteredString];
-          console.log("Updated valid words:", newValidWords);
-          return newValidWords;
-        });
+        dispatch({ type: actionTypes.SET_VALID_WORDS, payload: enteredString }); 
       }
       setOtp(["", "", "", "", "", ""]);
       inputRefs.current[0].focus();
     }
   };
 
-
-
   return (
     <WrapperComponent
-      
       onVolumePress={() => alert("Volume")}
       onDarkModePress={() => alert("Dark Mode")}
-      timer={timer}
-      navigation={ navigation}
-      
-      
+      timer={true}
+      navigation={navigation}
     >
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View>
-        
-
           <Text style={styles.instructionText}>Player Instructions:</Text>
           <View style={styles.instructionsList}>
             <Text style={styles.instructionItem}>
@@ -166,21 +159,16 @@ const GamePage = ({ route, navigation }) => {
         <View style={styles.yourWordsContainer}>
           <Text style={styles.yourWordsTitle}>Your Words</Text>
           <View style={styles.wordsGrid}>
-          {submittedWords.map((word, index) => (
-  <View key={index} style={styles.wordBox}>
-    
-    {isCommonWord(word) ? (
-        <FontAwesome name="check-circle" size={24} color="green" />
-      ) : (
-        <FontAwesome name="times-circle" size={24} color="red" />
-      )} 
-      <Text style={styles.wordText}>
-     
-      
-     {word}
-   </Text>
-  </View>
-))}
+            {submittedWords.map((word, index) => (
+              <View key={index} style={styles.wordBox}>
+                {isCommonWord(word) ? (
+                  <FontAwesome name="check-circle" size={24} color="green" />
+                ) : (
+                  <FontAwesome name="times-circle" size={24} color="red" />
+                )}
+                <Text style={styles.wordText}>{word}</Text>
+              </View>
+            ))}
           </View>
         </View>
       </ScrollView>
@@ -191,21 +179,21 @@ const GamePage = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   scrollContainer: {
     flexGrow: 1,
-    justifyContent: "space-around", 
-    alignItems: "center", 
-    paddingBottom: 30, 
+    justifyContent: "space-around",
+    alignItems: "center",
+    paddingBottom: 30,
   },
   diceContainer: {
-    flexDirection: "row", 
-    justifyContent: "center", 
-    width: "100%", 
-    marginVertical: 20, 
-    gap: 10 ,
+    flexDirection: "row",
+    justifyContent: "center",
+    width: "100%",
+    marginVertical: 20,
+    gap: 10,
   },
   diceButton: {
     width: 50,
     height: 50,
-    
+
     backgroundColor: "navy",
     justifyContent: "center",
     alignItems: "center",
@@ -227,15 +215,15 @@ const styles = StyleSheet.create({
     textShadowRadius: 1,
   },
   otpContainer: {
-    flexDirection: "row", 
+    flexDirection: "row",
     gap: 10,
     justifyContent: "center",
-    width: "100%", 
-    marginVertical: 20, 
+    width: "100%",
+    marginVertical: 20,
   },
   otpInput: {
-    width: 50, 
-    height: 50, 
+    width: 50,
+    height: 50,
     borderWidth: 1,
     borderColor: "black",
     borderRadius: 8,
@@ -266,7 +254,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   yourWordsContainer: {
-    marginTop: 30, 
+    marginTop: 30,
     alignItems: "center",
     width: "80%",
   },
@@ -278,21 +266,19 @@ const styles = StyleSheet.create({
   wordsGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center", 
-    gap: 10, 
+    justifyContent: "center",
+    gap: 10,
   },
   wordBox: {
-    width: 100, 
+    width: 100,
     padding: 10,
     marginVertical: 5,
     backgroundColor: "#f0f0f0",
     alignItems: "center",
-    justifyContent : "center" ,
+    justifyContent: "center",
     borderRadius: 8,
-    gap : 5 ,
-    flexDirection : 'row' ,
-    
-
+    gap: 5,
+    flexDirection: "row",
   },
   wordText: {
     fontSize: 16,
@@ -304,14 +290,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   instructionsList: {
-    marginLeft: 20, 
+    marginLeft: 20,
   },
   instructionItem: {
     fontSize: 16,
     marginBottom: 5,
   },
   disabledButton: {
-    backgroundColor: "gray", 
+    backgroundColor: "gray",
   },
 });
 

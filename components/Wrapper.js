@@ -1,5 +1,5 @@
 import React from "react";
-import { useState, useEffect , useContext } from "react";
+import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../context/userContext";
 import {
   View,
@@ -14,41 +14,39 @@ import {
 
 const WrapperComponent = ({
   children,
-  
+
   timer,
   onVolumePress,
   onDarkModePress,
-  buttons,navigation
-  
+  buttons,
+  navigation,
 }) => {
-  const [countdown, setCountdown] = useState(60); 
-  const {score} = useContext(UserContext)
+  const [countdown, setCountdown] = useState(60);
+  const {
+    state: { score },
+  } = useContext(UserContext);
   useEffect(() => {
     let interval;
-    console.log('this is timer boolean ', timer);
-    
     if (timer) {
-      setCountdown(60); 
+      setCountdown(60);
       interval = setInterval(() => {
         setCountdown((prev) => {
           if (prev <= 1) {
             clearInterval(interval);
-            
-            // Delay the navigation by 500ms
+
             setTimeout(() => {
               navigation.navigate("ResultPage");
             }, 500);
-  
+
             return 0;
           }
           return prev - 1;
         });
       }, 1000);
     }
-  
+
     return () => clearInterval(interval);
   }, [timer]);
-  
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -76,7 +74,9 @@ const WrapperComponent = ({
         {/* Timer in the middle */}
         {timer && (
           <View style={styles.timerContainer}>
-            <Text style={[styles.timerText , {color : 'black', marginTop : 0 }]}>{countdown} s</Text>
+            <Text style={[styles.timerText, { color: "black", marginTop: 0 }]}>
+              {countdown} s
+            </Text>
           </View>
         )}
 
@@ -113,7 +113,6 @@ const WrapperComponent = ({
             </TouchableOpacity>
           ))}
       </View>
-      
     </SafeAreaView>
   );
 };
@@ -121,7 +120,7 @@ const WrapperComponent = ({
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: "navy", 
+    backgroundColor: "navy",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   topRow: {
@@ -191,7 +190,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   contentWrapper: {
-    backgroundColor: "navy", 
+    backgroundColor: "navy",
     padding: 10,
   },
   mainContent: {
@@ -201,7 +200,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 0,
     borderTopLeftRadius: 0,
     overflow: "hidden",
-    padding: 10, 
+    padding: 10,
   },
   bottomRow: {
     flexDirection: "row",
