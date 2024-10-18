@@ -20,16 +20,16 @@ const getRandomLetters = () => {
   const selectedGuaranteedLetters = [];
   while (selectedGuaranteedLetters.length < 2) {
     const randomIndex = Math.floor(Math.random() * guaranteedLetters.length);
-    const letter = guaranteedLetters.splice(randomIndex, 1)[0]; // Remove and return letter
+    const letter = guaranteedLetters.splice(randomIndex, 1)[0]; 
     selectedGuaranteedLetters.push(letter);
   }
 
   const randomLetters = [];
   while (randomLetters.length < 4) {
     const randomIndex = Math.floor(Math.random() * letters.length);
-    const letter = letters.splice(randomIndex, 1)[0]; // Remove and return letter
+    const letter = letters.splice(randomIndex, 1)[0]; 
     if (!selectedGuaranteedLetters.includes(letter)) {
-      // Ensure no duplicates
+     
       randomLetters.push(letter);
     }
   }
@@ -38,7 +38,7 @@ const getRandomLetters = () => {
 
   for (let i = finalLetters.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [finalLetters[i], finalLetters[j]] = [finalLetters[j], finalLetters[i]]; // Swap
+    [finalLetters[i], finalLetters[j]] = [finalLetters[j], finalLetters[i]]; 
   }
 
   return finalLetters;
@@ -79,7 +79,7 @@ export default function RollDicePage({ navigation }) {
   const buttons = [
     {
       label: "ROLL DICE",
-      onPress: handleRollDice, // Trigger shake on button press
+      onPress: handleRollDice,
     },
   ];
 

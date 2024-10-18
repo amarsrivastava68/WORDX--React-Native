@@ -23,7 +23,7 @@ import { UserContext, actionTypes } from "../context/userContext";
 import { SettingsContext } from "../context/settingsContext";
 const GamePage = ({ route, navigation }) => {
   const { randomLetters } = route.params;
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+  const [wordsGrid, setWordsGrid] = useState(["", "", "", "", "", ""]);
   const [submittedWords, setSubmittedWords] = useState([]); // Store entered words
   const inputRefs = useRef([]);
   const { dispatch, state } = useContext(UserContext);
@@ -60,9 +60,9 @@ const GamePage = ({ route, navigation }) => {
   );
 
   const handleInputChange = (index, value) => {
-    const newOtp = [...otp];
-    newOtp[index] = value.toUpperCase();
-    setOtp(newOtp);
+    const newwordsGrid = [...wordsGrid];
+    newwordsGrid[index] = value.toUpperCase();
+    setWordsGrid(newwordsGrid);
 
     if (value && index < 5) {
       inputRefs.current[index + 1].focus();
@@ -70,7 +70,7 @@ const GamePage = ({ route, navigation }) => {
   };
 
   const handleKeyPress = (index, event) => {
-    if (event.nativeEvent.key === "Backspace" && otp[index] === "") {
+    if (event.nativeEvent.key === "Backspace" && wordsGrid[index] === "") {
       if (index > 0) {
         inputRefs.current[index - 1].focus();
       }
@@ -78,28 +78,24 @@ const GamePage = ({ route, navigation }) => {
   };
 
   const handleSubmit = () => {
-    const enteredString = otp.join("");
+    const enteredString = wordsGrid.join("");
     if (enteredString.trim()) {
       setSubmittedWords((prev) => {
         if (!prev.includes(enteredString)) {
-          // Only add the word if it's not already in submittedWords
           const updatedWords = [...prev, enteredString];
           
-          // Dispatch if it's a common word
           if (isCommonWord(enteredString)) {
             dispatch({ type: actionTypes.SET_VALID_WORDS, payload: enteredString });
           }
           
           return updatedWords;
         } else {
-          // Show alert if the word is already present
           Alert.alert("Duplicate Entry", "This word has already been submitted.");
           return prev;
         }
       });
   
-      // Reset the OTP input fields and focus on the first one
-      setOtp(["", "", "", "", "", ""]);
+      setWordsGrid(["", "", "", "", "", ""]);
       inputRefs.current[0].focus();
     }
   };
@@ -129,12 +125,12 @@ const GamePage = ({ route, navigation }) => {
             ))}
         </View>
 
-        {/* OTP Input Boxes */}
-        <View style={styles(isDarkMode).otpContainer}>
-          {otp.map((value, index) => (
+        {/* wordsGrid Input Boxes */}
+        <View style={styles(isDarkMode).wordsGridContainer}>
+          {wordsGrid.map((value, index) => (
             <TextInput
               key={index}
-              style={styles(isDarkMode).otpInput}
+              style={styles(isDarkMode).wordsGridInput}
               maxLength={1}
               value={value}
               onChangeText={(text) => handleInputChange(index, text)}
@@ -151,16 +147,16 @@ const GamePage = ({ route, navigation }) => {
         <Pressable
           style={[
             styles(isDarkMode).enterButton,
-            (otp.filter((letter) => letter !== "").length < 3 ||
-              otp.some(
+            (wordsGrid.filter((letter) => letter !== "").length < 3 ||
+              wordsGrid.some(
                 (letter) => letter && !randomLetters.includes(letter)
               )) &&
               styles(isDarkMode).disabledButton,
           ]}
           onPress={handleSubmit}
           disabled={
-            otp.filter((letter) => letter !== "").length < 3 ||
-            otp.some((letter) => letter && !randomLetters.includes(letter))
+            wordsGrid.filter((letter) => letter !== "").length < 3 ||
+            wordsGrid.some((letter) => letter && !randomLetters.includes(letter))
           }
         >
           <Text style={styles(isDarkMode).enterButtonText}>ENTER</Text>
@@ -221,14 +217,14 @@ const styles = (isDarkMode) => StyleSheet.create({
     fontWeight: "bold",
     color: isDarkMode ? "black" : "white",
   },
-  otpContainer: {
+  wordsGridContainer: {
     flexDirection: "row",
     gap: 10,
     justifyContent: "center",
     width: "100%",
     marginVertical: 20,
   },
-  otpInput: {
+  wordsGridInput: {
     width: 50,
     height: 50,
     borderWidth: 1,
@@ -248,9 +244,7 @@ const styles = (isDarkMode) => StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
 
-    boxShadow: isDarkMode
-      ? '0px 2px 4px rgba(255, 255, 255, 0.1)' 
-      : '0px 2px 4px rgba(0, 0, 0, 0.1)',
+    
   },
   enterButtonText: {
     color: "white",

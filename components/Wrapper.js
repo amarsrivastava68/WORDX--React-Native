@@ -6,6 +6,7 @@ import {
   settingsActionTypes,
 } from "../context/settingsContext";
 import {
+  Alert,
   View,
   Pressable,
   Text,
@@ -57,14 +58,20 @@ const WrapperComponent = ({ children, timer, buttons, navigation }) => {
         <View style={styles.iconContainer}>
           <Pressable
             onPress={() => {
+              Alert.alert("Mute State", `Mute State - ${!isMuted}`);
               settingsDispatch({ type: settingsActionTypes.TOGGLE_MUTE });
             }}
             style={styles.iconWrapper}
           >
-            <Image
-              source={require("../assets/volume-icon.png")}
+         { !isMuted &&  <Image
+              source={require(`../assets/volume-icon.png`)}
               style={styles.icon}
-            />
+            />}
+             { isMuted &&  <Image
+              source={require(`../assets/mute.png`)}
+              style={styles.icon}
+            />}
+
           </Pressable>
           <Pressable
             onPress={() => {
@@ -73,10 +80,14 @@ const WrapperComponent = ({ children, timer, buttons, navigation }) => {
             }}
             style={styles.iconWrapper}
           >
-            <Image
+           {!isDarkMode && <Image
               source={require("../assets/dark-mode-icon.png")}
               style={styles.icon}
-            />
+            />} 
+            {isDarkMode && <Image
+              source={require("../assets/bulb.png")}
+              style={styles.icon}
+            />} 
           </Pressable>
         </View>
 
@@ -104,23 +115,26 @@ const WrapperComponent = ({ children, timer, buttons, navigation }) => {
         {timer && (
           <View style={[styles.timerBottomContainer, { flexDirection: "col" }]}>
             <Image
-              source={require("../assets/sand-clock-icon.png")} // Replace with your hourglass icon
+              source={require("../assets/sand-clock-icon.png")} 
               style={styles.timerIcon}
             />
             <Text style={styles.timerText}>{countdown}s</Text>
           </View>
         )}
 
-        {!timer &&
-          buttons.map((button, index) => (
-            <Pressable
-              key={index}
-              style={styles.button}
-              onPress={button.onPress}
-            >
-              <Text style={styles.buttonText}>{button.label}</Text>
-            </Pressable>
-          ))}
+{!timer &&
+  buttons.map((button, index) => (
+    <Pressable
+      key={index}
+      onPress={button.onPress}
+      style={({ pressed }) => [
+        styles.button, 
+        pressed && styles.buttonPressed 
+      ]}
+    >
+      <Text style={styles.buttonText}>{button.label}</Text>
+    </Pressable>
+  ))}
       </View>
     </SafeAreaView>
   );
@@ -221,15 +235,18 @@ const styles = StyleSheet.create({
     backgroundColor: "navy",
   },
   button: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#007BFF", 
     padding: 15,
     borderRadius: 10,
     flex: 1,
     marginHorizontal: 5,
     alignItems: "center",
     justifyContent: "center",
-    elevation: 5,
-    
+    elevation: 5, 
+  },
+  buttonPressed: {
+    backgroundColor: "#0056b3", 
+    transform: [{ scale: 0.95 }], 
   },
   buttonText: {
     color: "white",
